@@ -1,0 +1,7 @@
+{
+  "register_access_per_s": 32814320.0,
+  "mcu_ticks_per_s": 66141941.0,
+  "scheduler_steps_per_s": 21903406.0,
+  "rf_link_s": 1.5922050999979547,
+  "ml_infer_s": 0.003450899999734247
+}

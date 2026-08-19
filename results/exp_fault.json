@@ -1,0 +1,7 @@
+{
+  "invalid_mmio": "C tests expect ML_ERR_INVALID_ADDR",
+  "unaligned": "C tests expect ML_ERR_UNALIGNED",
+  "timer_fail": "microlink_sim --fault-timer yields timer_events=0",
+  "spi_fail": "microlink_sim --fault-spi returns ML_ERR_FAULT on transfer",
+  "recovery": "application continues scheduling remaining tasks when timer ISR is suppressed"
+}

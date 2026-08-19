@@ -1,0 +1,4 @@
+{
+  "gpio_uart_spi_i2c_timer_rtos": "executed by microlink_tests / microlink_sim",
+  "cosim": "scripts/run_cosim.py"
+}

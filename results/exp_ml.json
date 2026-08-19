@@ -1,0 +1,30 @@
+{
+  "train": {
+    "acc": 1.0,
+    "n": 24,
+    "path": "C:\\Users\\ketan\\Desktop\\Projects\\stody\\microlink\\results\\adapter.joblib"
+  },
+  "loop": {
+    "probe": {
+      "mod": "qpsk",
+      "snr_awgn_db": 8.0,
+      "ber": 0.015625,
+      "evm_pct": 54.00148816329573,
+      "snr_meas_db": 5.351885436058373,
+      "rssi": -6.399304593021937,
+      "n_bits": 256,
+      "seed": 5
+    },
+    "chosen_mod": "bpsk",
+    "after": {
+      "mod": "bpsk",
+      "snr_awgn_db": 8.0,
+      "ber": 0.0,
+      "evm_pct": 54.779364291612254,
+      "snr_meas_db": 5.2276602398327725,
+      "rssi": -6.438775899843677,
+      "n_bits": 256,
+      "seed": 6
+    }
+  }
+}

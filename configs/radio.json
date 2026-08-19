@@ -1,0 +1,9 @@
+{
+  "freq_khz": 2400,
+  "gain": 10,
+  "modulation": "qpsk",
+  "bandwidth_khz": 200,
+  "filter": 1,
+  "seed": 7,
+  "sim_tick_ns": 1000
+}
