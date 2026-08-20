@@ -75,6 +75,9 @@ int main(int argc, char **argv)
            "sched_switches=%u\n",
            ticks, (unsigned long long)sys.mcu.irq_dispatches, sys.timer_events, sys.radio_cycles,
            sys.last_rssi, sys.last_snr, sys.rtos.switches);
+    printf("cycles=%llu stalls=%llu mmio_r=%u mmio_w=%u irq_cycles=%u\n",
+           (unsigned long long)sys.mcu.cycles.cycles, (unsigned long long)sys.mcu.cycles.stalls,
+           sys.mcu.cycles.mmio_reads, sys.mcu.cycles.mmio_writes, sys.mcu.cycles.irq_events);
     printf("tasks:");
     for (uint8_t n = 0; n < sys.rtos.ntasks; n++) {
         printf(" %s=%u", sys.rtos.tasks[n].name, sys.rtos.tasks[n].run_count);

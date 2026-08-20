@@ -1,5 +1,7 @@
 #include "mcu.h"
 
+#include "../registers/register.h"
+
 #include <string.h>
 
 static void mcu_raise_irq(void *ctx, uint32_t irq)
@@ -17,6 +19,7 @@ ml_status_t ml_mcu_init(ml_mcu_t *mcu)
     memset(mcu, 0, sizeof(*mcu));
     ml_fault_cfg_clear(&mcu->faults);
     ml_clock_init(&mcu->clock, 1000u);
+    ml_cycle_model_init(&mcu->cycles);
     st = ml_memory_map_init(&mcu->map);
     if (st != ML_OK) {
         return st;
@@ -73,18 +76,39 @@ void ml_mcu_apply_faults(ml_mcu_t *mcu)
 void ml_mcu_tick(ml_mcu_t *mcu)
 {
     ml_clock_tick(&mcu->clock);
+    ml_cycle_model_consume(&mcu->cycles, ML_CYCLES_PER_TICK);
+    uint32_t tctrl = ml_reg_peek32(&mcu->timer.bank, ML_TMR_REG_CTRL);
+    if ((tctrl & ML_TMR_CTRL_EN) != 0u) {
+        ml_cycle_model_consume(&mcu->cycles, ML_CYCLES_TIMER_ACTIVE);
+    }
     ml_timer_tick(&mcu->timer);
     if (ml_irqc_dispatch(&mcu->irqc)) {
         mcu->irq_dispatches++;
+        mcu->cycles.irq_events++;
+        ml_cycle_model_consume(&mcu->cycles, ML_CYCLES_IRQ_DISPATCH);
     }
 }
 
 ml_status_t ml_mcu_read32(ml_mcu_t *mcu, uint32_t addr, uint32_t *out)
 {
-    return ml_memory_map_read32(&mcu->map, addr, out);
+    ml_status_t st = ml_memory_map_read32(&mcu->map, addr, out);
+    if (st == ML_OK) {
+        mcu->cycles.mmio_reads++;
+        ml_cycle_model_consume(&mcu->cycles, ML_CYCLES_MMIO_READ);
+    } else if (st == ML_ERR_FAULT) {
+        ml_cycle_model_stall(&mcu->cycles, ML_CYCLES_FAULT_STALL);
+    }
+    return st;
 }
 
 ml_status_t ml_mcu_write32(ml_mcu_t *mcu, uint32_t addr, uint32_t value)
 {
-    return ml_memory_map_write32(&mcu->map, addr, value);
+    ml_status_t st = ml_memory_map_write32(&mcu->map, addr, value);
+    if (st == ML_OK) {
+        mcu->cycles.mmio_writes++;
+        ml_cycle_model_consume(&mcu->cycles, ML_CYCLES_MMIO_WRITE);
+    } else if (st == ML_ERR_FAULT) {
+        ml_cycle_model_stall(&mcu->cycles, ML_CYCLES_FAULT_STALL);
+    }
+    return st;
 }

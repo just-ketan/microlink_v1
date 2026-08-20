@@ -13,7 +13,7 @@ flowchart TD
   RTOS --> APP
   PER --> BR[JSON/TCP bridge]
   BR --> RF[Python RF engine]
-  RF --> ML[Random Forest adapter]
+  RF --> ML[ML model registry]
   ML --> APP
 ```
 

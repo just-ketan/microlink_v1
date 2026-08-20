@@ -2,6 +2,7 @@
 #define MICRLINK_MCU_H
 
 #include "../clock/clock.h"
+#include "cycle_model.h"
 #include "../fault_injection/fault.h"
 #include "../interrupt_controller/irqc.h"
 #include "../memory_map/memory_map.h"
@@ -27,6 +28,7 @@ typedef struct ml_mcu {
     ml_irqc_t irqc;
     ml_radio_t radio;
     ml_fault_cfg_t faults;
+    ml_cycle_model_t cycles;
     uint64_t irq_dispatches;
 } ml_mcu_t;
 

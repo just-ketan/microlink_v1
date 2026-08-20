@@ -10,6 +10,7 @@ int main(void)
     printf("MicroLink C unit tests\n");
     test_registers();
     test_memory_map();
+    test_cycle_model();
     test_gpio();
     test_uart();
     test_spi();

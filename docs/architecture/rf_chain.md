@@ -1,12 +1,18 @@
 # RF chain (behavioral)
 
 ```
-bits → constellation map → RRC pulse shape → (optional) passband mix
-    → behavioral RF filter / LC ladder (ABCD)
-    → AWGN / fade / CFO / phase / timing
-    → downsample → demap → BER / EVM / SNR
+bits → map → RRC → (optional) passband → behavioral filter / ladder ABCD
+    → channel → demap → BER / EVM / SNR
 ```
 
-Ladder filters use cascaded ABCD matrices of series L and shunt C. S-parameters are converted from ABCD with a 50 Ω reference. This is **not** a full electromagnetic solver.
+## Host SDR (v0.2)
 
-Acoustic-wave devices use a Butterworth–Van Dyke RLC+C0 equivalent circuit, not piezoelectric FEM.
+When `HostRadio` is configured with `iq_rx_path`, samples are read from disk instead of generating a fresh link simulation. Supports `.npy` complex arrays and interleaved float32 IQ.
+
+`cosim/bridge/server.py` honors `iq_rx` / `iq_tx` message fields.
+
+## Educational EM slice (v0.2)
+
+`rf/em/educational_field.py` produces a 2D |E| magnitude grid for visualization. Standing wave along x from ladder Zin; exponential decay along y. **Not** 3D FEM.
+
+Ladder filters use cascaded ABCD matrices. Acoustic devices use BVD equivalent circuits.

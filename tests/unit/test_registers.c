@@ -43,3 +43,19 @@ void test_memory_map(void)
     T_CHECK(b == &mcu.spi.bank);
     T_EQ_ST(ml_memory_map_lookup(&mcu.map, 0u, &b), ML_ERR_INVALID_ADDR);
 }
+
+void test_cycle_model(void)
+{
+    ml_mcu_t mcu;
+    uint32_t v = 0;
+    T_EQ_ST(ml_mcu_init(&mcu), ML_OK);
+    T_EQ_U32((uint32_t)mcu.cycles.cycles, 0u);
+    for (int i = 0; i < 10; i++) {
+        ml_mcu_tick(&mcu);
+    }
+    T_CHECK(mcu.cycles.cycles >= 10u);
+    T_EQ_ST(ml_mcu_read32(&mcu, ML_GPIO_BASE + ML_GPIO_REG_DATA, &v), ML_OK);
+    T_CHECK(mcu.cycles.mmio_reads == 1u);
+    T_EQ_ST(ml_mcu_write32(&mcu, ML_GPIO_BASE + ML_GPIO_REG_DATA, 1u), ML_OK);
+    T_CHECK(mcu.cycles.mmio_writes == 1u);
+}

@@ -21,6 +21,7 @@ from ml.training.train import train_model
 from rf.acoustic_wave.bvd import bvd_impedance, resonance_freqs
 from rf.experiments.link import simulate_link
 from rf.filters.ladder.lc_ladder import transfer_response
+from rf.em.educational_field import field_grid_2d
 from rf.matching.lmatch import l_section_match
 from rf.smith_chart.smith import smith_grid, z_to_gamma
 
@@ -111,6 +112,24 @@ def exp_acoustic():
     _save_json("exp_acoustic.json", {"fs": fs, "fa": fa, "model": "Butterworth-Van Dyke"})
 
 
+def exp_em_field():
+    x = np.linspace(0, 0.5, 64)
+    y = np.linspace(-0.15, 0.15, 32)
+    grid = field_grid_2d(1e6, x, y)
+    plt.figure(figsize=(6, 3))
+    plt.imshow(grid, extent=[x[0], x[-1], y[0], y[-1]], aspect="auto", origin="lower")
+    plt.xlabel("x (m)")
+    plt.ylabel("y (m)")
+    plt.title("Educational 2D |E| slice (standing wave + decay; not 3D FEM)")
+    plt.colorbar(label="|E| norm")
+    plt.savefig(RESULTS / "em_field_2d.png", dpi=120)
+    plt.close()
+    _save_json(
+        "exp_em_field.json",
+        {"model": "1D standing wave on ladder Zin + y decay proxy", "freq_hz": 1e6},
+    )
+
+
 def exp_ml():
     info = train_model(RESULTS / "adapter.joblib", seed=7)
     loop = adaptive_loop(RESULTS / "adapter.joblib", snr=8.0, seed=5)
@@ -134,6 +153,7 @@ def main():
     exp_ladder()
     exp_smith()
     exp_acoustic()
+    exp_em_field()
     exp_ml()
     exp_firmware_stub()
     _save_json("experiments_meta.json", {"seconds": time.time() - t0, "seed_policy": "fixed per experiment"})

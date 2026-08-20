@@ -35,6 +35,7 @@ extern int g_test_passes;
 
 void test_registers(void);
 void test_memory_map(void);
+void test_cycle_model(void);
 void test_gpio(void);
 void test_uart(void);
 void test_spi(void);

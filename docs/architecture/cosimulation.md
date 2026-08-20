@@ -1,19 +1,17 @@
 # Co-simulation
 
-Versioned newline-delimited JSON on TCP `127.0.0.1:8765`.
+Versioned newline JSON on TCP `127.0.0.1:8765`.
 
-Example TXRX request from the MCU:
+## IQ file fields (v0.2)
 
-```json
-{"v":1,"ts":123000,"type":"TXRX","src":"mcu","dst":"rf","seq":4,"cmd":2,"freq_khz":2400,"gain":10,"mod":1,"bw":200,"filter":1}
-```
-
-Response:
+TXRX messages may include:
 
 ```json
-{"v":1,"type":"RADIO_STATUS","rssi":100,"snr":28,"ber":0.0,"seq":4}
+{"iq_rx": "/path/to/capture.npy", "iq_tx": "/path/to/out.npy"}
 ```
 
-**Tradeoff**: JSON is inspectable and easy to version. Dense I/Q blocks would use length-prefixed binary; this design keeps I/Q inside Python and returns metrics so the firmware register map stays small.
+Or set `MICRLINK_IQ_RX` before starting the server.
 
-If the engine is down, firmware uses a local deterministic radio model so C tests still run.
+Response includes `"mode": "iq_file"` or `"simulated"`.
+
+Tradeoff: JSON control plane stays debuggable; IQ bulk data uses files rather than inline base64.
